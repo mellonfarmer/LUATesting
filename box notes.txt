@@ -1,0 +1,20 @@
+x origin - x destination
+10,50 = 40
+40/2 = 20
+
+y origin - y destination
+10,60 = 50
+
+
+draw
+x origin, x size
+10,200
+
+add the two to get destination co-ord
+10 + 200 = 210
+
+center:
+10 - 210 = 200
+200/2 = 100
+
+box size is 240
