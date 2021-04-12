@@ -7,6 +7,8 @@ end
 loadlib("loadAssets")
 loadlib("webRequest")
 loadlib("processJson")
+loadlib("debug")
+
 
 SCREEN_WIDTH = 960
 SCREEN_HEIGHT = 544
@@ -28,22 +30,10 @@ Whumid = weatherData.main.humidity
 WwindSpeed = weatherData.wind.speed
 Wdesc = weatherData.weather.description
 --Wicon = getWeatherIcon(weatherData.weather.icon)
-function drawGrid(size,color)
-	--Graphics.drawLine(10, 25, 100, 250, Color.new(25, 200, 120))
-	--debug gride for placing elements
-	--size 32 and 64
-	size = size or 32
-	color = color or Color.new(65, 65, 65)
 
-	--too tired to work out maths
-	amount = SCREEN_WIDTH /size
+enableGrid = false
 
-	for g = 0,amount do
-		Graphics.drawLine(g*amount, , 100, 250, Color.new(25, 200, 120))
-	end
-
-end
-
+local pad, oldPad = Controls.read()
 
 function printfontStyled(x,y,size,text,font,color)
 	size=size or 40
@@ -53,25 +43,27 @@ function printfontStyled(x,y,size,text,font,color)
 	Font.print(font,x,y,text,color)
 end
 
-
-function drawRect(x,xs,y,ys,color,DEBUG)
-	--half area add origin -center
-
-	local xs = xs + x
-
-	local ys = ys + y
-	local dbgy = (ys)+10
-
-	local DEBUG = DEBUG or false
-
-	if DEBUG == true then
-		Graphics.debugPrint(x,dbgy,"x: "..x.." xs: "..xs.." y: "..y.." xy: "..ys, ColourWhite)
-	end
-	Graphics.fillRect(x, xs, y, ys, color)
+function truncateNumber(toTruncate,length)
+  length = length or 1
+  return tonumber(string.format("%."..length.."f", toTruncate))  
 end
 
 
-
+function input()
+  oldPad, pad = pad, Controls.read()
+  
+  if Controls.check(pad, SCE_CTRL_RTRIGGER) and not Controls.check(oldPad, SCE_CTRL_RTRIGGER) then
+    if enableGrid == false then
+      enableGrid = true
+    else
+      enableGrid = false
+    end
+  end
+    
+	--if Controls.check(Controls.read(),SCE_CTRL_TRIANGLE) then
+	--	break
+	--end
+end
 function update()
 	pTime = cTime --previous time
 	cTime = Timer.getTime(exTime) --current time
@@ -81,20 +73,26 @@ end
 function draw()
 	Graphics.initBlend()
 	Screen.clear()
-	drawRect(0,  SCREEN_WIDTH, 0, 60, Color.new(0, 100, 0),true)
+  
+
+
+  
+  
+  
+	--drawRect(0,  SCREEN_WIDTH, 0, 60, Color.new(0, 100, 0),true)
 	Graphics.drawImage(0,0,imgBackground)
 
-	drawRect(0, SCREEN_WIDTH, 60, 60, Color.new(0, 0, 100),true)
-	Graphics.drawImage(20,16,imgBurger)
-	Graphics.drawImage(859,16,imgSearch)
-	Graphics.drawImage(927,16,imgDots)
+	dbgDrawRect(0, SCREEN_WIDTH, 62, 60, Color.new(0, 0, 100))
+	Graphics.drawImage(17,16,imgBurger)
+	Graphics.drawImage(852,16,imgSearch)
+	Graphics.drawImage(915,16,imgDots)
 	--City 370,60
-	printfontStyled(370,60,40,Wcity,fntFredoka,ColourWhite)
+	printfontStyled(370,75,40,Wcity,fntFredoka,ColourWhite)
 
 	--debug rectangles
-	drawRect(60,  240, 120, 240, Color.new(255, 0, 0))
-	drawRect(360, 240, 120, 240, Color.new(255, 0, 0))
-	drawRect(660, 240, 120, 240, Color.new(255, 0, 0))
+	dbgDrawRect(64,  240, 127, 240, Color.new(255, 0, 0))
+	dbgDrawRect(360, 240, 127, 240, Color.new(255, 0, 0))
+	dbgDrawRect(656, 240, 127, 240, Color.new(255, 0, 0))
 
 
 	--weather icon
@@ -104,30 +102,39 @@ function draw()
 
 	--temp
 	Font.setPixelSizes(fntRoboto,52)
-	Font.print(fntRoboto,427,165,Wtemp.."C",ColourWhite)
+	Font.print(fntRoboto,427,165,truncateNumber(Wtemp).."C",ColourWhite)
 	--humidity
 	Font.setPixelSizes(fntRoboto,15)
 	Font.print(fntRoboto,490,328,Whumid.."%",ColourWhite)
 	--description
-	printfontStyled(70,380,42,Wdesc,fntFredoka,ColourWhite)
+	printfontStyled(70,390,42,Wdesc,fntFredoka,ColourWhite)
 	--Font.setPixelSizes(fntRoboto,40)
 	--Font.print(fntRoboto,70,380,Wdesc,ColourWhite)
 
     --add wind
 
 	--Graphics.debugPrint(0,0,Timer.getTime(exTime), ColourWhite)
+  
+  if enableGrid == true then
+    dbgDrawFullGrid()
+  end
+  
+  Graphics.debugPrint(0,0,tostring(enableGrid),ColourWhite)
+  
 	Graphics.termBlend()
 	Screen.flip()
 end
 
 while true do
-
+  input()
 	update()
 	draw()
 
-	if Controls.check(Controls.read(),SCE_CTRL_TRIANGLE) then
-		break
-	end
+
+  
+      
+
+  
 
 end
 --System.exit()
