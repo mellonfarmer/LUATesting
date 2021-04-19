@@ -1,1 +1,0 @@
-copy "./index.lua" "G:\app\WTHR00001\" /Y
