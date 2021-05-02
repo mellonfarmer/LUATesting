@@ -1,0 +1,13 @@
+function errorHandler( err )
+	Graphics.initBlend()
+	Screen.clear()
+  
+  Graphics.debugPrint(30, 30, "ERROR: " .. err, Color.new(255, 255, 255))
+  Graphics.debugPrint(30, 100, "Icon code: " .. weatherData.weather.icon, Color.new(255, 255, 255))
+
+  --System.wait(10000000)
+  
+  Graphics.termBlend()
+	Screen.flip()
+end
+

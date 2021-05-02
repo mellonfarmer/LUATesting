@@ -1,0 +1,12 @@
+  
+  --local dbgjsonData = "ux0:/app/WTHR00001/jsonData.txt"
+  
+  --if System.doesFileExist(dbgjsonData) then
+	--	System.deleteFile(dbgjsonData)
+	--end
+	--local fh = System.openFile(dbgjsonData, FCREATE)
+  
+  --local JsonData = print_r(weatherData)
+  
+  --System.writeFile(fh, JsonData, #JsonData)
+	--System.closeFile(fh)
